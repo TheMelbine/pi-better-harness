@@ -289,7 +289,8 @@ function refreshMainListWidget(): void {
     selectedId: s.mainListFocused ? s.mainListSelectedId : undefined,
     focused: s.mainListFocused === true,
   })] : undefined;
-  if (!rows.length) {
+  // Unfocused: no widget at all (an empty one still leaves a blank gap); the footer shows the count.
+  if (!rows.length || s.mainListFocused !== true) {
     if (!s.mainListWidgetInstalled) return;
     try { setNavigatorPanel(ctx, MAIN_LIST_WIDGET_KEY, undefined); } catch { /* ignore */ }
     s.mainListWidgetInstalled = false;
