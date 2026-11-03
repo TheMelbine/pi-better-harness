@@ -741,6 +741,7 @@ function installNavigatorEditor(ui: any, deps: HostDeps): unknown {
 
 function wrapEditor(inner: any, deps: HostDeps): unknown {
   if (inner && typeof inner.render === "function") state().editorComponent = inner as Component;
+  let renderOverride: any;
   const proxy: any = new Proxy(inner, {
     get(target, prop) {
       if (prop === "handleInput") {
@@ -752,16 +753,18 @@ function wrapEditor(inner: any, deps: HostDeps): unknown {
         };
       }
       if (prop === "render" && typeof target.render === "function") {
+        const ov = renderOverride;
         return (...args: unknown[]) => {
           const s = state();
           if (s.editorFocusTarget === proxy) s.editorRenders = (s.editorRenders ?? 0) + 1;
-          return target.render(...args);
+          return ov ? ov(...args) : target.render(...args);
         };
       }
       const value = Reflect.get(target, prop);
       return typeof value === "function" ? value.bind(target) : value;
     },
     set(target, prop, value) {
+      if (prop === "render") { renderOverride = value; return true; }
       return Reflect.set(target, prop, value);
     },
   });
