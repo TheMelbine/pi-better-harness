@@ -570,8 +570,10 @@ function buildMainListLayout(
   for (let i = 0; i < orderedLabels.length; i += 1) {
     const label = orderedLabels[i]!;
     const group = grouped.get(label)!;
-    if (i > 0) push("");
-    push(providerGroupLabel(label, fg));
+    if (orderedLabels.length > 1) {
+      if (i > 0) push("");
+      push(providerGroupLabel(label, fg));
+    }
     for (const row of group) {
       const selected = options.focused && row.navigatorId === options.selectedId;
       push(formatMainListRow(row, selected === true, fg, width), row.navigatorId);
@@ -584,8 +586,8 @@ function buildMainListLayout(
 
 function shortcutsLine(focused: boolean, fg: (color: string, value: string) => string): string {
   const keys = focused
-    ? "↑↓ switch · Enter detail · x stop · Esc unfocus"
-    : "← work navigator";
+    ? "↑↓ select · Enter view · x stop · Esc back"
+    : "↓ to manage";
   return dim(keys, fg);
 }
 
@@ -802,6 +804,9 @@ function handleMainListInput(data: string, deps: HostDeps): boolean {
     if (moveMainListSelection(-1)) {
       refreshMainListWidget();
       if (!selectedMainListRow()?.parentRow) openNavigator();
+    } else {
+      // Up past the first row returns to the prompt, as in Claude Code.
+      unfocusMainList();
     }
     return true;
   }

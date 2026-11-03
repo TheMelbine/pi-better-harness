@@ -33,7 +33,7 @@ export function ensureBackgroundTasksNavigator(ctx: ExtensionContext): void {
   activeNavigatorOrigin = getNavigatorOrigin(ctx);
   ensureBackgroundWorkNavigator(ctx, {
     createDefaultEditor: (tui, theme, keybindings) => new CustomEditor(tui as never, theme as never, keybindings as never),
-    isOpenTrigger: (data) => matchesKey(data, Key.left),
+    isOpenTrigger: (_data) => false, // the footer (cc-footer.ts) owns ↓ and the task panel
     matchKey: (data, keyId) => matchesKey(data, keyId as Parameters<typeof matchesKey>[1]),
     truncate: truncateToWidth,
   });
