@@ -147,7 +147,7 @@ function mountHost(s: State): void {
       },
       dispose() { disposePanels(s); s.mounted = false; },
     };
-  }, { placement: "aboveEditor" });
+  }, { placement: "belowEditor" });
 }
 function changeSticky(value: string, ctx: ExtensionContext): void {
   if (value !== "On" && value !== "Off") throw new Error("Sticky navigator expects On or Off.");

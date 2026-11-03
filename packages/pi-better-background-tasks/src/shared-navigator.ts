@@ -299,7 +299,7 @@ function refreshMainListWidget(): void {
   }
   if (!s.mainListWidgetInstalled) {
     try {
-      setNavigatorPanel(ctx, MAIN_LIST_WIDGET_KEY, (tui: { requestRender?(): void }, theme: unknown) => createMainListWidget(tui, theme, deps), { placement: "aboveEditor" });
+      setNavigatorPanel(ctx, MAIN_LIST_WIDGET_KEY, (tui: { requestRender?(): void }, theme: unknown) => createMainListWidget(tui, theme, deps), { placement: "belowEditor" });
       s.mainListWidgetInstalled = true;
     } catch { /* ignore */ }
   }
@@ -553,6 +553,12 @@ function buildMainListLayout(
     lines.push(line);
     owners.push(owner);
   };
+  // Claude Code style: one summary line until the list is focused (←).
+  if (!options.focused) {
+    const n = rows.length;
+    push(fg("accent", "⏵ ") + fg("muted", `${n} background ${n === 1 ? "task" : "tasks"}`) + dim(" · ← to view", fg));
+    return { lines: lines.map((line) => safeTruncate(line, width, truncate)), owners };
+  }
   const grouped = new Map<string, InternalRow[]>();
   for (const row of rows) {
     const existing = grouped.get(row.providerLabel) ?? [];
