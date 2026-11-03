@@ -555,8 +555,7 @@ function buildMainListLayout(
   };
   // Claude Code style: one summary line until the list is focused (←).
   if (!options.focused) {
-    const n = rows.length;
-    push(fg("accent", "⏵ ") + fg("muted", `${n} background ${n === 1 ? "task" : "tasks"}`) + dim(" · ← to view", fg));
+    // The count is drawn by the footer (cc-footer.ts) on its single line.
     return { lines: lines.map((line) => safeTruncate(line, width, truncate)), owners };
   }
   const grouped = new Map<string, InternalRow[]>();
